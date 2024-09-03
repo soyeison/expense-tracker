@@ -1,6 +1,22 @@
 import argparse
 from datetime import datetime
 from domain.expense import Expense
+from use_cases.add_use_case import AddUseCase
+from utils.get_next_id import getNextId
+
+def command_add(description, amount):
+        try:
+            idToSave = getNextId()
+            descriptionToSave = description
+            amountToSave = amount
+            createdAtToSave = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+
+            newExpense = Expense(idToSave, descriptionToSave, amountToSave, createdAtToSave)
+            rowSaved = AddUseCase.execute(newExpense)
+
+            return rowSaved
+        except Exception as e:
+            raise e
 
 def main():
     parser = argparse.ArgumentParser(description="Manage your finances CLI")
@@ -29,18 +45,9 @@ def main():
 
     args = parser.parse_args()
 
-    print("Args:",args)
-
     try:
         if args.command == "add":
-            id = '1'
-            description = "Hola mundo"
-            amount = 53
-            createdAt = datetime.now()
-            newExpense = Expense(id, description, amount, createdAt)
-            # Caso de uso de agregar
-            # Dentro del caso de uso convertir al formato que necesita la DB
-            # Guardar
+            print(command_add(args.description, args.amount))
 
         elif args.command == "list":
             print("Se ejecuto list")
