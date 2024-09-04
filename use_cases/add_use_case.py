@@ -1,12 +1,18 @@
-from utils.conver_to_database import convertToDatabaseExpenseModel
 from domain.expense import Expense
-from database.expense_model import ExpenseModel
+from adapters.csv_expense_repository import CsvExpenseRepository
 
 class AddUseCase:
-    @staticmethod
-    def execute(expense: Expense):
+    def __init__(self, expense_repository: CsvExpenseRepository) -> None:
+        self.expenses = expense_repository
+
+    def execute(self, expense: Expense):
         try:
-            expenseSaved = ExpenseModel.add(expense.id, expense.description, expense.amount, expense.createdAt, expense.createdAt)
-            return expenseSaved
+            if expense.id is not None:
+                self.expenses.add(expense)
+                self.expenses.save()
+            else:
+                raise ValueError("Expense id cannot be None")
+
+            return expense
         except Exception as e:
             raise e

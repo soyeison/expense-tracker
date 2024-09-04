@@ -1,6 +1,5 @@
 import config
 import csv
-from database.expense_model import ExpenseModel
 
 def getNextId():
     try:

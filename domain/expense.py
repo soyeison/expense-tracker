@@ -1,6 +1,10 @@
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
 class Expense:
-    def __init__(self, id, description, amount, createdAt):
-        self.id = id
-        self.description = description
-        self.amount = amount
-        self.createdAt = createdAt
+    description: str
+    amount: float
+    createdAt: str
+    updatedAt: str
+    id: Optional[str] = None

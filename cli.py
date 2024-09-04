@@ -4,17 +4,23 @@ from domain.expense import Expense
 from use_cases.add_use_case import AddUseCase
 from utils.get_next_id import getNextId
 
+from adapters.csv_expense_repository import CsvExpenseRepository
+
 def command_add(description, amount):
         try:
-            idToSave = getNextId()
-            descriptionToSave = description
-            amountToSave = amount
-            createdAtToSave = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+            expense_repository = CsvExpenseRepository()
+            add_use_case = AddUseCase(expense_repository)
 
-            newExpense = Expense(idToSave, descriptionToSave, amountToSave, createdAtToSave)
-            rowSaved = AddUseCase.execute(newExpense)
+            new_expense = Expense(
+                id=getNextId(), 
+                description=description, 
+                amount=amount, 
+                createdAt=datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                updatedAt=datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+            )
 
-            return rowSaved
+            expense = add_use_case.execute(new_expense)
+            pass
         except Exception as e:
             raise e
 
