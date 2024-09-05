@@ -2,6 +2,7 @@ import csv
 import config
 from domain.expense import Expense
 from errors.write_csv_file_exception import WriteCsvFileException
+from errors.dont_exist_expense import DontExistExpense
 
 class CsvExpenseRepository:
     def __init__(self):
@@ -14,6 +15,15 @@ class CsvExpenseRepository:
     
     def read_expenses(self):
         return self.expenses
+    
+    def delete(self, id):
+        try:
+            expenseDeleted = self.expenses.pop(id)
+            self.saveCsv()
+            
+            return expenseDeleted
+        except KeyError as e:
+            raise DontExistExpense(f"Don't exist task with id: {id}")
     
     def readCsv(self):
         try:
@@ -33,7 +43,7 @@ class CsvExpenseRepository:
     
     def saveCsv(self):
         try:
-            with open(config.DATABASE_FILE_PATH, 'a', newline='\n') as file:
+            with open(config.DATABASE_FILE_PATH, 'w', newline='\n') as file:
                 writer = csv.writer(file, delimiter=';')
                 for expense_id in self.expenses:
                     actual_expense = self.expenses[expense_id]
