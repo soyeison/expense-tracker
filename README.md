@@ -1,7 +1,3 @@
-Guia sobre inyeccion de dependencias
+# Project expense-tracker
 
-https://codigoencasa.com/mejora-tu-codigo-en-python-descubre-como-la-inyeccion-de-dependencia-puede-hacer-la-diferencia/
-
-Codigo de esta guia
-
-https://github.com/PatrickKalkman/python-di/tree/master
+Project from [Roadmap python projects](https://roadmap.sh/projects/expense-tracker)
