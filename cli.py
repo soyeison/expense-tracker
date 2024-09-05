@@ -4,6 +4,7 @@ from domain.expense import Expense
 from use_cases.add_use_case import AddUseCase
 from use_cases.read_use_case import ReadUseCase
 from use_cases.delete_use_case import DeleteUseCase
+from use_cases.update_use_case import UpdateUseCase
 from utils.get_next_id import getNextId
 
 from adapters.csv_expense_repository import CsvExpenseRepository
@@ -48,6 +49,15 @@ def command_delete(id: str):
         return "Expense deleted successfully"
     except Exception as e:
         raise e
+    
+def command_update(id, element_type, element_value):
+    try:
+        expense_repository = CsvExpenseRepository()
+        update_use_case = UpdateUseCase(expense_repository)
+        update_use_case.execute(id, element_type, element_value)
+        return "Expense updated successfully"
+    except Exception as e:
+        raise e
 
 def main():
     parser = argparse.ArgumentParser(description="Manage your finances CLI")
@@ -56,7 +66,7 @@ def main():
     # Agregar los argumentos de add
     parser_add = subparse.add_parser('add', help="Add expense")
     parser_add.add_argument("--description", type=str, required=True, help="Description of expense")
-    parser_add.add_argument("--amount", type=float, required=True, help="Amount of that expense")
+    parser_add.add_argument("--amount", type=str, required=True, help="Amount of that expense")
 
     # Agregar los argumentos de list
     parser_list = subparse.add_parser('list', help="List all expenses")
@@ -67,8 +77,9 @@ def main():
 
     # Agregar los argumentos de update
     parser_update = subparse.add_parser("update", help="Update a row")
-    parser_update.add_argument("--id", type=int, required=True, help="Id of finance")
-    parser_update.add_argument("--description", type=str, required=True, help="Description of expense to update")
+    parser_update.add_argument("--id", type=str, required=True, help="Id of finance")
+    parser_update.add_argument("--description", type=str, required=False, help="Description of expense to update")
+    parser_update.add_argument("--amount", type=str, required=False, help="Amount of expense to update")
 
     # Agregar los argumentos de delete
     parser_delete = subparse.add_parser('delete', help="Delete expense")
@@ -87,8 +98,15 @@ def main():
             print(command_summary())
 
         elif args.command == "update":
-            print("Se ejecuto update")
-
+            if args.description is not None and args.amount is None:
+                print(command_update(args.id, "description", args.description))
+            elif args.description is None and args.amount is not None:
+                print(command_update(args.id, "amount", args.amount))
+            elif args.description is not None and args.amount is not None:
+                command_update(args.id, "description", args.description)
+                print(command_update(args.id, "amount", args.amount))
+            else:
+                raise ValueError("Los argumentos pasados son incorrectos")
         elif args.command == "delete":
             print(command_delete(args.id))
             

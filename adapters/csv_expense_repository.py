@@ -16,6 +16,19 @@ class CsvExpenseRepository:
     def read_expenses(self):
         return self.expenses
     
+    def update(self, id, element_key, element_value):
+        try:
+            element_to_update = self.expenses[id]
+            setattr(element_to_update, element_key, element_value)
+            self.saveCsv()
+
+            return element_to_update
+        
+        except KeyError as e:
+            raise DontExistExpense(f"Don't exist task with id: {id}")
+        except Exception as e:
+            raise e
+    
     def delete(self, id):
         try:
             expenseDeleted = self.expenses.pop(id)
