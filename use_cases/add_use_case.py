@@ -9,7 +9,7 @@ class AddUseCase:
         try:
             if expense.id is not None:
                 self.expenses.add(expense)
-                self.expenses.save()
+                self.expenses.saveCsv()
             else:
                 raise ValueError("Expense id cannot be None")
 

@@ -2,27 +2,36 @@ import argparse
 from datetime import datetime
 from domain.expense import Expense
 from use_cases.add_use_case import AddUseCase
+from use_cases.read_use_case import ReadUseCase
 from utils.get_next_id import getNextId
 
 from adapters.csv_expense_repository import CsvExpenseRepository
 
 def command_add(description, amount):
-        try:
-            expense_repository = CsvExpenseRepository()
-            add_use_case = AddUseCase(expense_repository)
+    try:
+        expense_repository = CsvExpenseRepository()
+        add_use_case = AddUseCase(expense_repository)
 
-            new_expense = Expense(
-                id=getNextId(), 
-                description=description, 
-                amount=amount, 
-                createdAt=datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
-                updatedAt=datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-            )
+        new_expense = Expense(
+            id=getNextId(), 
+            description=description, 
+            amount=amount, 
+            createdAt=datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+            updatedAt=datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+        )
 
-            expense = add_use_case.execute(new_expense)
-            pass
-        except Exception as e:
-            raise e
+        expense = add_use_case.execute(new_expense)
+        return f"Expense added successfully (ID: {expense.id})"
+    except Exception as e:
+        raise e
+        
+def command_list():
+    try:
+        expense_repository = CsvExpenseRepository()
+        read_use_case = ReadUseCase(expense_repository)
+        return read_use_case.execute()
+    except Exception as e:
+        raise e
 
 def main():
     parser = argparse.ArgumentParser(description="Manage your finances CLI")
@@ -56,7 +65,7 @@ def main():
             print(command_add(args.description, args.amount))
 
         elif args.command == "list":
-            print("Se ejecuto list")
+            print(command_list())
 
         elif args.command == "summary":
             print("Se ejecuto summary")
