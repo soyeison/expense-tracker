@@ -6,7 +6,7 @@ def getNextId():
         with open(config.DATABASE_FILE_PATH, 'r', newline='\n') as file:
             reader = csv.reader(file, delimiter=';')
             listReader = list(reader)
-            if len(listReader) == 0:
+            if len(listReader[0]) == 0:
                 return "1"
             lastItemOfList = listReader[len(listReader) - 1]
             nextId = int(lastItemOfList[0]) + 1

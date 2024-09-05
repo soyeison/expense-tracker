@@ -43,14 +43,17 @@ class CsvExpenseRepository:
             with open(config.DATABASE_FILE_PATH, 'r', newline='\n') as file:
                 reader = csv.reader(file, delimiter=';')
                 listReader = list(reader)
-                for expense in listReader:
-                    self.expenses[expense[0]] = Expense(
-                        id=expense[0],
-                        description=expense[1],
-                        amount=expense[2],
-                        createdAt=expense[3],
-                        updatedAt=expense[4]
-                    )
+                if len(listReader[0]) == 0:
+                    self.expenses = {}
+                else:
+                    for expense in listReader:
+                        self.expenses[expense[0]] = Expense(
+                            id=expense[0],
+                            description=expense[1],
+                            amount=expense[2],
+                            createdAt=expense[3],
+                            updatedAt=expense[4]
+                        )
         except Exception as e:
             raise e
     
