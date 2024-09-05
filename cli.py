@@ -5,6 +5,7 @@ from use_cases.add_use_case import AddUseCase
 from use_cases.read_use_case import ReadUseCase
 from use_cases.delete_use_case import DeleteUseCase
 from use_cases.update_use_case import UpdateUseCase
+from use_cases.summary_use_case import SummaryUseCase
 from utils.get_next_id import getNextId
 
 from adapters.csv_expense_repository import CsvExpenseRepository
@@ -59,6 +60,18 @@ def command_update(id, element_type, element_value):
     except Exception as e:
         raise e
 
+def command_summary(months = None):
+    try:
+        expense_repository = CsvExpenseRepository()
+        summary_use_case = SummaryUseCase(expense_repository)
+        summary_result, month_name = summary_use_case.execute(months)
+        if month_name is None:
+            return f"Total expenses: ${summary_result}"
+        else:
+            return f"Total expenses for {month_name}: ${summary_result}"
+    except Exception as e:
+        raise e
+
 def main():
     parser = argparse.ArgumentParser(description="Manage your finances CLI")
     subparse = parser.add_subparsers(dest="command", help="Sub-commands")
@@ -95,7 +108,7 @@ def main():
             print(command_list())
 
         elif args.command == "summary":
-            print(command_summary())
+            print(command_summary(args.month))
 
         elif args.command == "update":
             if args.description is not None and args.amount is None:
